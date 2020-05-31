@@ -1,4 +1,11 @@
+const routerBase = process.env.USE_SUBFOLDER === "true" ? {
+  router: {
+    base: "/motion_youtube/"
+  }
+} : {}
+
 module.exports = {
+  ...routerBase,
   /*
   ** Headers of the page
   */
@@ -21,6 +28,7 @@ module.exports = {
   ** Build configuration
   */
   build: {
+    vender: ['@tensorflow/tfjs', '@tensorflow-models/posenet'],
     /*
     ** Run ESLint on save
     */
@@ -34,6 +42,9 @@ module.exports = {
         })
       }
     }
+  },
+  generate: {
+    dir: "motion_youtube"
   }
 }
 

@@ -2,21 +2,26 @@
   "name": "motion_youtube",
   "version": "1.0.0",
   "description": "Nuxt.js project",
-  "author": "Hidemaro Fujinami <guppy4.spurs21@gmail.com>",
+  "author": "Hidemaro Fujinami <hdmrf.fjnm@gmail.com>",
   "private": true,
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
+    "generate:use-subfolder": "cross-env USE_SUBFOLDER=true nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "precommit": "npm run lint"
   },
   "dependencies": {
+    "@tensorflow-models/posenet": "^2.2.1",
+    "@tensorflow/tfjs": "^1.3.2",
+    "core-js": "^2.6.10",
     "nuxt": "^2.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
+    "cross-env": "^7.0.2",
     "eslint": "^4.19.1",
     "eslint-friendly-formatter": "^4.0.1",
     "eslint-loader": "^2.1.1",
