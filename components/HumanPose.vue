@@ -3,7 +3,7 @@
     <div id="loading" ref="loading" v-show="loading" :style="{ height: windowHeight + 'px' }">
       <div class="sk-spinner sk-spinner-pulse"></div>
     </div>
-    <div id="pose" v-bind:style="{ height: windowHeight + 'px'}" v-show="!loading">
+    <div id="pose" v-bind:style="{ height: windowHeight/2 + 'px'}" v-show="!loading" ref="pose">
       <video
         id="video"
         ref="video"
@@ -60,13 +60,17 @@ export default {
       }
 
       const video = this.$refs.video;
+      video.width = this.videoWidth;
+      video.height = this.videoHeight;
       this.stopExistingVideoCapture();
 
       // const mobile = this.isAndroid() || this.isiOS();
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: false,
         video: {
-          deviceId: this.cameras[this.cameraIndex].deviceId
+          deviceId: this.cameras[this.cameraIndex].deviceId,
+          width: this.videoWidth,
+          height: this.videoHeight
         }
       });
       window.console.log(
@@ -76,10 +80,10 @@ export default {
 
       return new Promise(resolve => {
         video.onloadedmetadata = () => {
-          let width = video.videoWidth;
-          let height = video.videoHeight;
-          video.width = width;
-          video.height = height;
+          // let height = video.videoHeight;
+          // let width = video.videoWidth;
+          // video.width = width;
+          // video.height = height;
           resolve(video);
         };
       });
@@ -115,6 +119,8 @@ export default {
     },
     detctPose() {
       const canvas = this.$refs.output;
+      canvas.width = this.videoWidth;
+      canvas.height = this.videoHeight;
 
       const self = this;
       async function updateFrame() {
@@ -142,7 +148,7 @@ export default {
         { r: 0, g: 0, b: 0, a: 0 },
         false
       );
-      bodyPix.drawMask(canvas, video, mask, 1.0, 0, true);
+      bodyPix.drawMask(canvas, video, mask, 0.3, 0, true);
     },
     drawPose(segmentation, canvas) {
       const ctx = canvas.getContext("2d");
@@ -211,6 +217,8 @@ export default {
   },
   async mounted() {
     this.windowHeight = window.innerHeight;
+    this.videoHeight = this.windowHeight / 2;
+    this.videoWidth = this.windowHeight / 2;
     this.loading = true;
 
     await this.loadNet();
@@ -224,7 +232,7 @@ export default {
 </script>
 
 <style>
-.container {
+.content {
   width: 100%;
   overflow: hidden;
 }
