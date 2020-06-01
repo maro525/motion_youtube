@@ -1,8 +1,6 @@
 <template>
   <section class="container">
-    <div>
-      <HumanPose />
-    </div>
+    <HumanPose />
   </section>
 </template>
 
@@ -19,7 +17,7 @@ export default {
 </script>
 
 <style>
-.container {
+.content {
   min-height: 100vh;
   display: flex;
   justify-content: center;

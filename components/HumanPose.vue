@@ -1,9 +1,9 @@
 <template>
-  <section class="container">
+  <section class="content">
     <div id="loading" ref="loading" v-show="loading" :style="{ height: windowHeight + 'px' }">
       <div class="sk-spinner sk-spinner-pulse"></div>
     </div>
-    <div id="main" :style="{ height: windowHeight + 'px' }" v-show="!loading">
+    <div id="pose" v-bind:style="{ height: windowHeight + 'px'}" v-show="!loading">
       <video
         id="video"
         ref="video"
@@ -11,20 +11,13 @@
         style="-moz-transform: scaleX(-1); -o-transform: scaleX(-1); -webkit-transform: scaleX(-1);transform: scaleX(-1); display: none;"
       ></video>
       <canvas id="outut" ref="output" />
-      <div id="menu">
-        <ul>
-          <li v-on:click="changeCamera">
-            <i class="material-icons">flip_camera_ios</i>
-          </li>
-        </ul>
-      </div>
     </div>
   </section>
 </template>
 
 <script>
 import * as posenet from "@tensorflow-models/posenet";
-import { flipPoseHorizontal } from "@tensorflow-models/posenet/dist/util";
+import * as bodyPix from "@tensorflow-models/body-pix";
 
 export default {
   name: "HumanPose",
@@ -53,15 +46,7 @@ export default {
       await this.loadVideo();
     },
     async loadNet() {
-      this.net = await posenet.load({
-        architecture: "ResNet50",
-        outputStride: 32,
-        inputResolution: {
-          width: this.videoWidth / 4,
-          height: this.videoHeight / 4
-        },
-        quantBytes: 2
-      });
+      this.net = await bodyPix.load();
     },
     async loadVideo() {
       this.video = await this.setupCamera();
@@ -133,14 +118,15 @@ export default {
 
       const self = this;
       async function updateFrame() {
-        let poses = [];
         // try {
-        const pose = await self.net.estimatePoses(self.video, {
-          flipHorizontal: true,
-          decodingMethod: "single-person"
+        const segmentation = await self.estimateSegmentation();
+        self.drawMask(segmentation, canvas, self.video, {
+          r: 0,
+          g: 0,
+          b: 0,
+          a: 0
         });
-        poses = poses.concat(pose);
-        self.drawPose(poses, canvas);
+        self.drawPose(segmentation, canvas);
         // } catch (e) {
         //   window.console.log("Retrying...");
         // } finally {
@@ -149,52 +135,78 @@ export default {
       }
       updateFrame();
     },
-    drawPose(poses, canvas) {
+    drawMask(segmentation, canvas, video, color) {
+      const mask = bodyPix.toMask(
+        segmentation,
+        color,
+        { r: 0, g: 0, b: 0, a: 0 },
+        false
+      );
+      bodyPix.drawMask(canvas, video, mask, 1.0, 0, true);
+    },
+    drawPose(segmentation, canvas) {
       const ctx = canvas.getContext("2d");
       const scale = 1;
-      const size = 3;
+      const size = 5;
       const color = "aqua";
-      const minPoseConfidence = 0.1;
-      const minPartConfidence = 0.5;
+      const minScore = 0.1;
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      segmentation.forEach(personSegmentation => {
+        let pose = personSegmentation.pose;
+        pose = bodyPix.flipPoseHorizontal(pose, personSegmentation.width);
+        for (let i = 0; i < pose.keypoints.length; i++) {
+          const keypoint = pose.keypoints[i];
+          if (keypoint.score < minScore) {
+            continue;
+          }
 
-      // draw video
-      ctx.save();
-      ctx.scale(-1, 1);
-      ctx.translate(canvas.width, 0);
-      ctx.drawImage(this.video, 0, 0, canvas.width, canvas.height);
-      ctx.restore();
+          const { y, x } = keypoint.position;
+          this.drawPoint(ctx, y * scale, x * scale, size, color);
+        }
 
-      poses.forEach(({ score, keypoints }) => {
-        if (score >= minPoseConfidence) {
-          this.drawKeypoints(
-            keypoints,
-            minPartConfidence,
-            ctx,
+        const adjacentKeyPoints = posenet.getAdjacentKeyPoints(
+          pose.keypoints,
+          minScore
+        );
+        adjacentKeyPoints.forEach(keypoints => {
+          this.drawSegment(
+            this.toTuple(keypoints[0].position),
+            this.toTuple(keypoints[1].position),
             scale,
-            size,
-            color
+            size / 2,
+            color,
+            ctx
           );
-        }
+        });
       });
-    },
-    drawKeypoints(keypoints, minConfidence, ctx, scale, size, color) {
-      for (let i = 0; i < keypoints.length; i++) {
-        const keypoint = keypoints[i];
-        if (keypoint.score < minConfidence) {
-          continue;
-        }
-
-        const { y, x } = keypoint.position;
-        this.drawPoint(ctx, y * scale, x * scale, size, color);
-      }
     },
     drawPoint(ctx, y, x, r, color) {
       ctx.beginPath();
       ctx.arc(x, y, r, 0, 2 * Math.PI);
       ctx.fillStyle = color;
       ctx.fill();
+    },
+    drawSegment([ay, ax], [by, bx], scale, size, color, ctx) {
+      ctx.beginPath();
+      ctx.moveTo(ax * scale, ay * scale);
+      ctx.lineTo(bx * scale, by * scale);
+      ctx.lineWidth = 5;
+      ctx.strokeStyle = color;
+      ctx.stroke();
+    },
+    toTuple({ y, x }) {
+      return [y, x];
+    },
+    async estimateSegmentation() {
+      return await this.net.segmentMultiPerson(this.video, {
+        internalResolution: "medium",
+        segmentationThreshold: 0.7,
+        maxDetections: 5,
+        scoreThreshold: 0.2,
+        nmsRadius: 20,
+        numKeypointForMatching: 17,
+        refineSteps: 10
+      });
     }
   },
   async mounted() {
@@ -217,11 +229,17 @@ export default {
   overflow: hidden;
 }
 #loading,
-#main {
+#pose {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: left;
+  align-items: left;
 }
+
+#pose {
+  width: 50%;
+  margin: 20px;
+}
+
 #menu {
   position: absolute;
   text-align: center;
