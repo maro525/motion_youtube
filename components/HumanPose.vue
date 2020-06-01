@@ -3,7 +3,7 @@
     <div id="loading" ref="loading" v-show="loading" :style="{ height: windowHeight + 'px' }">
       <div class="sk-spinner sk-spinner-pulse"></div>
     </div>
-    <div id="pose" v-bind:style="{ height: windowHeight/2 + 'px'}" v-show="!loading" ref="pose">
+    <div id="main" v-show="!loading" ref="pose">
       <video
         id="video"
         ref="video"
@@ -11,6 +11,7 @@
         style="-moz-transform: scaleX(-1); -o-transform: scaleX(-1); -webkit-transform: scaleX(-1);transform: scaleX(-1); display: none;"
       ></video>
       <canvas id="outut" ref="output" />
+      <youtube :video-id="videoId" width="480" height="320" id="youtube" ref="youtube" />
     </div>
   </section>
 </template>
@@ -18,6 +19,10 @@
 <script>
 import * as posenet from "@tensorflow-models/posenet";
 import * as bodyPix from "@tensorflow-models/body-pix";
+import Vue from "vue";
+import VueYoutube from "vue-youtube";
+
+Vue.use(VueYoutube);
 
 export default {
   name: "HumanPose",
@@ -29,8 +34,16 @@ export default {
       cameraIndex: 0,
       changingCamera: false,
       loading: true,
-      windowHeight: 0
+      windowHeight: 0,
+      framenum: 0,
+      lastPosition: [],
+      videoId: "UP0jYMLfAtY"
     };
+  },
+  computed: {
+    player() {
+      return this.$refs.youtube.player;
+    }
   },
   methods: {
     async changeCamera() {
@@ -160,6 +173,7 @@ export default {
       segmentation.forEach(personSegmentation => {
         let pose = personSegmentation.pose;
         pose = bodyPix.flipPoseHorizontal(pose, personSegmentation.width);
+        this.judgeMovement(pose.keypoints, minScore);
         for (let i = 0; i < pose.keypoints.length; i++) {
           const keypoint = pose.keypoints[i];
           if (keypoint.score < minScore) {
@@ -213,12 +227,37 @@ export default {
         numKeypointForMatching: 17,
         refineSteps: 10
       });
+    },
+    judgeMovement(keypoints, minScore) {
+      this.framenum += 1;
+      if (this.framenum > 20) this.framenum = 0;
+      if (this.framenum % 20 != 0) return;
+      const keypoint = keypoints[10];
+      if (keypoint.score > minScore) {
+        const kx = keypoint.position.x;
+        const ky = keypoint.position.y;
+        if (this.lastPosition.length != 0) {
+          const dx = kx - this.lastPosition[0];
+          const dy = ky - this.lastPosition[1];
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist > 5) this.playYoutubeVideo(false);
+          else this.playYoutubeVideo(true);
+        }
+        this.lastPosition[0] = kx;
+        this.lastPosition[1] = ky;
+      }
+    },
+    playYoutubeVideo(bPlay) {
+      if (bPlay) this.player.playVideo();
+      else this.player.pauseVideo();
     }
   },
   async mounted() {
     this.windowHeight = window.innerHeight;
-    this.videoHeight = this.windowHeight / 2;
-    this.videoWidth = this.windowHeight / 2;
+    this.videoHeight = 320;
+    this.videoWidth = 400;
+    this.$refs.youtube.player.width = 400;
+    this.$refs.youtube.player.height = 300;
     this.loading = true;
 
     await this.loadNet();
@@ -236,16 +275,18 @@ export default {
   width: 100%;
   overflow: hidden;
 }
-#loading,
-#pose {
-  display: flex;
-  justify-content: left;
-  align-items: left;
+
+#main {
+  width: 100%;
+  margin: 10px;
 }
 
-#pose {
-  width: 50%;
-  margin: 20px;
+canvas {
+  margin: 0 30px;
+}
+
+iframe {
+  max-width: 650px;
 }
 
 #menu {
