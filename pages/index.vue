@@ -1,50 +1,48 @@
 <template>
   <section class="container">
-    <HumanPose />
+    <SearchBar @search-event="searchVideo" />
+    <VideoList :results="videos" />
   </section>
 </template>
 
 <script>
-import AppLogo from "~/components/AppLogo.vue";
-import HumanPose from "~/components/HumanPose.vue";
+import SearchBar from "~/components/layouts/SearchBar.vue";
+import VideoList from "~/components/layouts/VideoList.vue";
+import axios from "axios";
 
 export default {
+  data() {
+    return {
+      videos: [],
+      params: {
+        q: "",
+        part: "snippet",
+        type: "video",
+        maxResults: "5",
+        key: "AIzaSyB6ZuYvQ1x6ZQqcKL3ctnS9EE7IvMmyivI"
+      }
+    };
+  },
   components: {
-    AppLogo,
-    HumanPose
+    SearchBar,
+    VideoList
+  },
+  methods: {
+    searchVideo(searchTerm) {
+      this.params.q = searchTerm;
+      var self = this;
+      axios
+        .get("https://www.googleapis.com/youtube/v3/search", {
+          params: this.params
+        })
+        .then(function(res) {
+          self.videos = res.data.items;
+        });
+    }
   }
 };
 </script>
 
 <style>
-.content {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.title {
-  font-family: "Quicksand", "Source Sans Pro", -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* 1 */
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
-}
 </style>
 

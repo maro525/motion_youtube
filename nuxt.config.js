@@ -28,7 +28,7 @@ module.exports = {
   ** Build configuration
   */
   build: {
-    vender: ['@tensorflow/tfjs', '@tensorflow-models/posenet', '@tensorflow-models/body-pix'],
+    vender: ['@tensorflow/tfjs', '@tensorflow-models/posenet', '@tensorflow-models/body-pix', 'axios'],
     /*
     ** Run ESLint on save
     */
