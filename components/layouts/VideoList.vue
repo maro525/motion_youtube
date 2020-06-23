@@ -6,7 +6,7 @@
         <img width="300" height="200" v-bind:src="movie.snippet.thumbnails.medium.url" />
       </td>
       <!-- titleとdescription -->
-      <td align="left" valign="top" width="700">
+      <td align="left" valign="top" @click="onVideoSelect(movie.id.videoId)">
         <font size="5" color="#c71585">
           <b>{{ movie.snippet.title }}</b>
         </font>
@@ -22,6 +22,11 @@ export default {
   name: "VideoList",
   props: {
     results: null
+  },
+  methods: {
+    onVideoSelect(id) {
+      this.$emit("selectVideo", id);
+    }
   }
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <main>
       <nuxt />
     </main>
@@ -18,6 +18,15 @@ export default {
 </script>
 
 <style>
+.container {
+  margin: 50px;
+}
+
+main {
+  width: 100%;
+  height: 30em;
+}
+
 html {
   font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, "Helvetica Neue", Arial, sans-serif;

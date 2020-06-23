@@ -36,9 +36,11 @@ export default {
       loading: true,
       windowHeight: 0,
       framenum: 0,
-      lastPosition: [],
-      videoId: "UP0jYMLfAtY"
+      lastPosition: []
     };
+  },
+  props: {
+    videoId: null
   },
   computed: {
     player() {
@@ -259,6 +261,7 @@ export default {
     this.$refs.youtube.player.width = 400;
     this.$refs.youtube.player.height = 300;
     this.loading = true;
+    console.log(this.videoId);
 
     await this.loadNet();
     this.cameras = await this.getVideoInputs();

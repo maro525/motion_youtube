@@ -17,5 +17,6 @@ export default {
 <style scoped>
 .footer p {
   color: #36495d;
+  font-size: 10px;
 }
 </style>

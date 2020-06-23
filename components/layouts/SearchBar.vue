@@ -1,10 +1,24 @@
 <template>
   <div>
     <section class="section">
-      <div class="field">
-        <div class="control has-icon-left">
-          <input class="input is-success" type="test" v-model="searchTerm" placeholder="検索" />
-          <button @click="searchVideo">検索</button>
+      <div class="center">
+        <div class="logo">
+          <img src="~/assets/logo.svg" width="32" height="32" />
+        </div>
+        <div class="subtitle is-3 titlediv">
+          <p class="has-text-weight-normal">動きを止めると再生される動画サイト。</p>
+        </div>
+      </div>
+      <div class="field is-grouped is-grouped-centered searchdiv">
+        <div class="control expanded">
+          <input class="input" type="test" v-model="searchTerm" placeholder="検索" />
+        </div>
+        <div class="control">
+          <button class="button" @click="searchVideo">
+            <span class="icon">
+              <i class="fas fa-search"></i>
+            </span>
+          </button>
         </div>
       </div>
     </section>
@@ -17,7 +31,7 @@ export default {
   data() {
     return {
       results: null,
-      searchTerm: "keyword"
+      searchTerm: null
     };
   },
   methods: {
@@ -29,4 +43,22 @@ export default {
 </script>
 
 <style>
+.expanded {
+  flex-grow: 0.3;
+}
+.center {
+  text-align: center;
+}
+.logo {
+  margin: 100px auto 50px;
+}
+.title {
+  font-size: 400;
+}
+.titlediv {
+  margin: 50px auto;
+}
+.searchdiv {
+  margin: 70px auto;
+}
 </style>

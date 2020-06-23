@@ -45,6 +45,14 @@ module.exports = {
   },
   generate: {
     dir: "motion_youtube"
-  }
+  },
+  css: [
+    { src: '~assets/main.scss', lang: 'scss'}
+  ],
+  webfontloader: {
+    google: {
+      families: ['Noto+Sans+JP']
+    }
+  },
 }
 
