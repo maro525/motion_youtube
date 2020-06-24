@@ -1,9 +1,22 @@
 <template>
-  <section class="content">
-    <div id="loading" ref="loading" v-show="loading" :style="{ height: windowHeight + 'px' }">
-      <div class="sk-spinner sk-spinner-pulse"></div>
+  <section class="videocontent">
+    <youtube :video-id="videoId" width="640" height="500" id="youtube" ref="youtube" />
+    <div class="status" v-show="loading">
+      <div id="loading" ref="loading" :style="{ height: windowHeight + 'px' }">
+        <div class="sk-spinner sk-spinner-pulse"></div>
+      </div>
     </div>
     <div id="main" v-show="!loading" ref="pose">
+      <div class="howto">
+        <div class="explanebox">
+          <img src="~/assets/play.svg" width="32" height="32" />
+          <p>右手の動きを止める。</p>
+        </div>
+        <div class="explanebox">
+          <img src="~/assets/stop.svg" width="32" height="32" />
+          <p>右手を動かす。</p>
+        </div>
+      </div>
       <video
         id="video"
         ref="video"
@@ -11,7 +24,6 @@
         style="-moz-transform: scaleX(-1); -o-transform: scaleX(-1); -webkit-transform: scaleX(-1);transform: scaleX(-1); display: none;"
       ></video>
       <canvas id="outut" ref="output" />
-      <youtube :video-id="videoId" width="480" height="320" id="youtube" ref="youtube" />
     </div>
   </section>
 </template>
@@ -258,10 +270,9 @@ export default {
     this.windowHeight = window.innerHeight;
     this.videoHeight = 320;
     this.videoWidth = 400;
-    this.$refs.youtube.player.width = 400;
-    this.$refs.youtube.player.height = 300;
+    this.$refs.youtube.player.width = 200;
+    this.$refs.youtube.player.height = 150;
     this.loading = true;
-    console.log(this.videoId);
 
     await this.loadNet();
     this.cameras = await this.getVideoInputs();
@@ -274,22 +285,35 @@ export default {
 </script>
 
 <style>
-.content {
+.videocontent {
   width: 100%;
   overflow: hidden;
+  display: flex;
+  margin: 60px 20px;
 }
 
 #main {
-  width: 100%;
   margin: 10px;
+  width: 30%;
+  margin: 0 50px;
+  padding-top: 30px;
 }
 
 canvas {
-  margin: 0 30px;
+  height: 250px;
+  margin-top: 10px;
+}
+
+.howto {
+  margin: 16px 50px;
+  width: 375px;
+}
+.status {
+  margin: 150px;
 }
 
 iframe {
-  max-width: 650px;
+  min-width: 320px;
 }
 
 #menu {
@@ -310,6 +334,19 @@ iframe {
 #menu .material-icons {
   font-size: 30px;
 }
+
+.explanebox {
+  display: flex;
+  margin: 40px 0;
+}
+.explanebox img {
+  margin-right: 20px;
+}
+
+.explanebox p {
+  margin: 10px 0;
+}
+
 /*
   *  The following loading spinner CSS is from SpinKit project
   *  https://github.com/tobiasahlin/SpinKit

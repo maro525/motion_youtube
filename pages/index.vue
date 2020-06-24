@@ -1,8 +1,13 @@
 <template>
   <section class="container">
-    <SearchBar class="centering" @search-event="searchVideo" />
-    <div class="column is-three-quarters" v-if="bSearch">
-      <VideoList :results="videos" @selectVideo="selectVideo" />
+    <SearchBar
+      :showTitle="showTitle"
+      class="centering"
+      @search-event="searchVideo"
+      @back-to-top-event="backToTop"
+    />
+    <div v-if="bSearch">
+      <VideoList :results="videos" :showTitle="showTitle" @selectVideo="selectVideo" />
     </div>
     <div v-else>
       <HumanPose :videoId="videoId" />
@@ -25,10 +30,11 @@ export default {
         part: "snippet",
         type: "video",
         maxResults: "5",
-        key: "AIzaSyB6ZuYvQ1x6ZQqcKL3ctnS9EE7IvMmyivI"
+        key: "AIzaSyBV-MiGcQLIYTy7rTBYQ6zxmWHvfoREbL0"
       },
       videoId: "",
-      bSearch: true
+      bSearch: true,
+      showTitle: true
     };
   },
   components: {
@@ -39,6 +45,7 @@ export default {
   methods: {
     searchVideo(searchTerm) {
       this.params.q = searchTerm;
+      this.bSearch = true;
       var self = this;
       axios
         .get("https://www.googleapis.com/youtube/v3/search", {
@@ -47,11 +54,17 @@ export default {
         .then(function(res) {
           self.videos = res.data.items;
         });
+      console.log(self.videos);
     },
     selectVideo(id) {
       this.videoId = id;
-      console.log(this.videoId);
       this.bSearch = false;
+      this.showTitle = false;
+    },
+    backToTop(flag) {
+      this.videos = [];
+      this.showTitle = true;
+      this.bSearch = true;
     }
   }
 };

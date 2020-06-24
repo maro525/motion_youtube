@@ -15,8 +15,10 @@ export default {
 </script>
 
 <style scoped>
+.footer {
+  background-color: #fff;
+}
 .footer p {
-  color: #36495d;
   font-size: 10px;
 }
 </style>
