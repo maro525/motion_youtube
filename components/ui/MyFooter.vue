@@ -2,7 +2,7 @@
   <footer class="footer">
     <div class="container">
       <div class="content has-text-centered">
-        <p>(C) Ken Haga Kento Unemi Hidemaro Fujinami All rights Researved</p>
+        <img src="~/assets/footer.png" width="300" />
       </div>
     </div>
   </footer>

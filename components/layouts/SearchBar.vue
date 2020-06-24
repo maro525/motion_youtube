@@ -6,7 +6,7 @@
           <img src="~/assets/logo.svg" width="32" height="32" />
         </div>
         <div class="subtitle is-3 titlediv">
-          <p class="has-text-weight-normal">動きを止めると再生される動画サイト。</p>
+          <img src="~/assets/title.png" width="600" />
         </div>
       </div>
       <div class="searchlogo" @click="backToTop" v-bind:class="{ displaynone: showTitle  }">
@@ -62,7 +62,7 @@ section {
   text-align: center;
 }
 .logo {
-  margin: 100px auto 50px;
+  margin: 230px auto 50px;
 }
 .title {
   font-size: 400;

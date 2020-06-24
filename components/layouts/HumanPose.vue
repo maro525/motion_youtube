@@ -10,11 +10,11 @@
       <div class="howto">
         <div class="explanebox">
           <img src="~/assets/play.svg" width="32" height="32" />
-          <p>右手の動きを止める。</p>
+          <img class="scaledplay" src="~/assets/play.jpg" />
         </div>
         <div class="explanebox">
           <img src="~/assets/stop.svg" width="32" height="32" />
-          <p>右手を動かす。</p>
+          <img class="scaledstop" src="~/assets/stop.jpg" />
         </div>
       </div>
       <video
@@ -339,12 +339,16 @@ iframe {
   display: flex;
   margin: 40px 0;
 }
-.explanebox img {
-  margin-right: 20px;
-}
 
-.explanebox p {
-  margin: 10px 0;
+.scaledplay {
+  transform: scaleY(0.6);
+  padding-left: 28px;
+  text-align: left;
+}
+.scaledstop {
+  transform: scaleY(0.5);
+  padding-left: 30px;
+  text-align: left;
 }
 
 /*
