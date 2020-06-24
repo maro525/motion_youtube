@@ -1,5 +1,5 @@
 <template>
-  <footer class="footer">
+  <footer>
     <div class="container">
       <div class="content has-text-centered">
         <img src="~/assets/footer.png" width="300" />

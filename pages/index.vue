@@ -1,5 +1,5 @@
 <template>
-  <section class="container">
+  <section class="container indexcontainer">
     <SearchBar
       :showTitle="showTitle"
       class="centering"
@@ -73,6 +73,9 @@ export default {
 <style>
 .centering {
   margin: auto 10px;
+}
+.indexcontainer {
+  margin-bottom: 140px;
 }
 </style>
 

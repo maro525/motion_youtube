@@ -1,6 +1,6 @@
 <template>
   <section class="videocontent">
-    <youtube :video-id="videoId" width="640" height="500" id="youtube" ref="youtube" />
+    <youtube :video-id="videoId" width="640" height="450" id="youtube" ref="youtube" />
     <div class="status" v-show="loading">
       <div id="loading" ref="loading" :style="{ height: windowHeight + 'px' }">
         <div class="sk-spinner sk-spinner-pulse"></div>
@@ -289,14 +289,14 @@ export default {
   width: 100%;
   overflow: hidden;
   display: flex;
-  margin: 60px 20px;
+  margin: 80px 20px 20px;
 }
 
 #main {
   margin: 10px;
   width: 30%;
   margin: 0 50px;
-  padding-top: 30px;
+  padding-top: 2px;
 }
 
 canvas {
@@ -305,7 +305,7 @@ canvas {
 }
 
 .howto {
-  margin: 16px 50px;
+  margin: 10px 50px;
   width: 375px;
 }
 .status {
