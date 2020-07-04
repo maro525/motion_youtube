@@ -3,7 +3,7 @@
     <section>
       <div v-if="showTitle" class="center">
         <div class="logo">
-          <img src="~/assets/logo.svg" width="32" height="32" />
+          <img src="~/assets/logo.svg" width="100" height="32" />
         </div>
         <div class="subtitle is-3 titlediv">
           <img src="~/assets/title.png" width="600" />
@@ -76,8 +76,9 @@ section {
 }
 .searchlogo {
   float: left;
-  width: 60px;
-  padding-top: 10px;
+  width: 90px;
+  padding-top: 9px;
+  margin-right: 25px;
 }
 .inputbar {
   margin-left: 30px;

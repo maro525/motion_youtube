@@ -10,11 +10,11 @@
       <div class="howto">
         <div class="explanebox">
           <img src="~/assets/play.svg" width="32" height="32" />
-          <img class="scaledplay" src="~/assets/play.jpg" />
+          <img class="scaledplay" src="~/assets/play.png" />
         </div>
         <div class="explanebox">
           <img src="~/assets/stop.svg" width="32" height="32" />
-          <img class="scaledstop" src="~/assets/stop.jpg" />
+          <img class="scaledstop" src="~/assets/stop.png" />
         </div>
       </div>
       <video
@@ -48,7 +48,9 @@ export default {
       loading: true,
       windowHeight: 0,
       framenum: 0,
-      lastPosition: []
+      lastPosition: [],
+      frameThresh: 10,
+      distThresh: 5
     };
   },
   props: {
@@ -244,8 +246,8 @@ export default {
     },
     judgeMovement(keypoints, minScore) {
       this.framenum += 1;
-      if (this.framenum > 20) this.framenum = 0;
-      if (this.framenum % 20 != 0) return;
+      if (this.framenum > this.frameThresh) this.framenum = 0;
+      if (this.framenum % this.frameThresh != 0) return;
       const keypoint = keypoints[10];
       if (keypoint.score > minScore) {
         const kx = keypoint.position.x;
@@ -254,7 +256,7 @@ export default {
           const dx = kx - this.lastPosition[0];
           const dy = ky - this.lastPosition[1];
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist > 5) this.playYoutubeVideo(false);
+          if (dist > this.distThresh) this.playYoutubeVideo(false);
           else this.playYoutubeVideo(true);
         }
         this.lastPosition[0] = kx;
@@ -341,8 +343,8 @@ iframe {
 }
 
 .scaledplay {
-  transform: scaleY(0.6);
-  padding-left: 28px;
+  transform: scaleY(0.6) scaleX(0.95);
+  padding-left: 23px;
   text-align: left;
 }
 .scaledstop {
