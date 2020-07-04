@@ -52,6 +52,7 @@ export default {
           params: this.params
         })
         .then(function(res) {
+          console.log(res);
           self.videos = res.data.items;
         });
       console.log(self.videos);
