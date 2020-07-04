@@ -10,7 +10,7 @@
         </div>
       </div>
       <div class="searchlogo" @click="backToTop" v-bind:class="{ displaynone: showTitle  }">
-        <img src="~/assets/logo.svg" width="32" height="32" />
+        <img src="~/assets/logo.svg" width="100" height="32" />
       </div>
       <div class="field is-grouped inputbar" v-bind:class="{ searchdiv: showTitle}">
         <div class="control expanded">
