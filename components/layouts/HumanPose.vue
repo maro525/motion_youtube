@@ -271,7 +271,7 @@ export default {
   async mounted() {
     this.windowHeight = window.innerHeight;
     this.videoHeight = 320;
-    this.videoWidth = 400;
+    this.videoWidth = 600;
     this.$refs.youtube.player.width = 200;
     this.$refs.youtube.player.height = 150;
     this.loading = true;
@@ -299,6 +299,7 @@ export default {
   width: 30%;
   margin: 0 50px;
   padding-top: 2px;
+  pading-left: 10px;
 }
 
 canvas {
@@ -307,7 +308,7 @@ canvas {
 }
 
 .howto {
-  margin: 10px 50px;
+  margin: 10px 30px;
   width: 375px;
 }
 .status {

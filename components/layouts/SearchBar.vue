@@ -12,7 +12,7 @@
       <div class="searchlogo" @click="backToTop" v-bind:class="{ displaynone: showTitle  }">
         <img src="~/assets/logo.svg" width="100" height="32" />
       </div>
-      <div class="field is-grouped inputbar" v-bind:class="{ searchdiv: showTitle}">
+      <div v-if="showSearchBar" class="field is-grouped inputbar" v-bind:class="{ searchdiv: showTitle}">
         <div class="control expanded">
           <input class="input" type="test" v-model="searchTerm" placeholder="検索" />
         </div>
@@ -32,7 +32,8 @@
 export default {
   name: "SearchBar",
   props: {
-    showTitle: true
+    showTitle: true,
+    showSearchBar: false
   },
   data() {
     return {
@@ -54,6 +55,7 @@ export default {
 <style>
 section {
   margin: 20px;
+  padding-bottom: 10px;
 }
 .expanded {
   flex-grow: 0.3;
