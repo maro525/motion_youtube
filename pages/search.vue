@@ -30,7 +30,7 @@ export default {
         part: "snippet",
         type: "video",
         maxResults: "5",
-        key: "AIzaSyD2vHwGGPmoCplXrgcG5zYRl-Dy9t5d2o4"
+        key: "******"
       },
       videoId: "",
       bSearch: true,

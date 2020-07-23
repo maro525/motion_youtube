@@ -33,7 +33,7 @@ export default {
   name: "SearchBar",
   props: {
     showTitle: true,
-    showSearchBar: false
+    showSearchBar: true 
   },
   data() {
     return {
